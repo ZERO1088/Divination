@@ -17,9 +17,14 @@ import type { TrigramName } from '../types';
 
 /** 模拟三枚铜钱，返回总和 6|7|8|9 */
 export function throwThreeCoins(): number {
-  // 每枚：正面=3，反面=2；三枚之和 ∈ {6,7,8,9}
   const roll = (): number => (Math.random() < 0.5 ? 3 : 2);
   return roll() + roll() + roll();
+}
+
+/** 模拟三枚铜钱，返回各枚独立值 [coin1, coin2, coin3]，每枚 2 或 3 */
+export function throwThreeCoinsIndividual(): [number, number, number] {
+  const roll = (): number => (Math.random() < 0.5 ? 3 : 2);
+  return [roll(), roll(), roll()];
 }
 
 // ---- 爻分析 ----

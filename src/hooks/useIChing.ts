@@ -1,39 +1,74 @@
 // ============================================================
-// useIChing —— 六爻状态机 Hook
-// 严格时序：throwing → 0.7s 动画 → 计算 → idle/completed
+// useIChing —— 六爻状态机 Hook (仪式增强版)
+// 流程：idle → throwing（铜钱逐枚揭示 + 音效）→ 计算爻线 → idle/completed
 // ============================================================
 
 import { useState, useCallback, useMemo } from 'react';
 import type { Line, IChingPhase } from '../types';
-import { throwThreeCoins, determineLine, buildHexagram } from '../utils/ichingLogic';
+import {
+  throwThreeCoinsIndividual,
+  determineLine,
+  buildHexagram,
+} from '../utils/ichingLogic';
+import { coinToss, coinLand } from '../utils/sound';
 
-/** 摇卦动画时长（毫秒），必须等待动画结束后才计算 */
-const ANIMATION_MS = 700;
+/** 铜钱值 2=反面, 3=正面 */
+export type CoinValue = 2 | 3;
+
+/** 单枚 coin 2, 预留位用 0 表示 */
+type CoinSlot = CoinValue | 0;
+
+const delay = (ms: number): Promise<void> =>
+  new Promise((r) => setTimeout(r, ms));
 
 export function useIChing() {
   const [phase, setPhase] = useState<IChingPhase>('idle');
   const [lines, setLines] = useState<Line[]>([]);
   const [currentThrow, setCurrentThrow] = useState(0);
+  // 当前抛掷的三枚铜钱值（0 表示尚未揭示）
+  const [coinValues, setCoinValues] = useState<[CoinSlot, CoinSlot, CoinSlot] | null>(null);
 
-  /** 摇一次卦：throwing → 动画等待 → 计算 → 状态转移 */
+  /** 摇一次卦：铜钱逐枚揭示 → 音效 → 计算 */
   const throwCoins = useCallback(async (): Promise<void> => {
     if (phase !== 'idle' || currentThrow >= 6) return;
 
-    // --- 进入 throwing 阶段 ---
     setPhase('throwing');
+    setCoinValues(null);
 
-    // --- 等待动画完成（模拟铜钱翻转）---
-    await new Promise<void>((resolve) => setTimeout(resolve, ANIMATION_MS));
+    // 预计算结果（不展示），保证随机性
+    const coins = throwThreeCoinsIndividual();
 
-    // --- 动画结束，执行计算 ---
-    const coinSum = throwThreeCoins();
+    // ---- 铜钱 1: 抛 + 落 ----
+    await delay(180);
+    setCoinValues([coins[0], 0, 0]);
+    coinToss();
+    await delay(400);
+    coinLand();
+
+    // ---- 铜钱 2: 抛 + 落 ----
+    await delay(120);
+    setCoinValues([coins[0], coins[1], 0]);
+    coinToss();
+    await delay(400);
+    coinLand();
+
+    // ---- 铜钱 3: 抛 + 落 ----
+    await delay(120);
+    setCoinValues([coins[0], coins[1], coins[2]]);
+    coinToss();
+    await delay(400);
+    coinLand();
+
+    // ---- 命运凝定 ----
+    await delay(260);
+    const coinSum = coins[0] + coins[1] + coins[2];
     const newLine = determineLine(currentThrow, coinSum);
     const nextThrow = currentThrow + 1;
 
     setLines((prev) => [...prev, newLine]);
     setCurrentThrow(nextThrow);
+    setCoinValues(null);
 
-    // --- 状态转移 ---
     if (nextThrow >= 6) {
       setPhase('completed');
     } else {
@@ -41,14 +76,13 @@ export function useIChing() {
     }
   }, [phase, currentThrow]);
 
-  /** 重置所有状态 */
   const reset = useCallback((): void => {
     setPhase('idle');
     setLines([]);
     setCurrentThrow(0);
+    setCoinValues(null);
   }, []);
 
-  /** 仅在 completed 时计算卦象 */
   const hexagram = useMemo(() => {
     if (phase === 'completed' && lines.length === 6) {
       return buildHexagram(lines);
@@ -56,5 +90,13 @@ export function useIChing() {
     return null;
   }, [phase, lines]);
 
-  return { phase, lines, currentThrow, throwCoins, reset, hexagram };
+  return {
+    phase,
+    lines,
+    currentThrow,
+    coinValues,
+    throwCoins,
+    reset,
+    hexagram,
+  };
 }

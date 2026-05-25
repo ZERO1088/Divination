@@ -1,25 +1,15 @@
 // ============================================================
-// LoadingSpinner —— 加载动画占位
-// motion.div 旋转动画
+// LoadingSpinner —— 呼吸光点 Loading（重构版）
+// 替代旋转 spinner · 使用 BreathingDots
 // ============================================================
 
-import { motion } from 'framer-motion';
 import { type ReactNode } from 'react';
+import { BreathingDots } from './BreathingDots';
 
 interface LoadingSpinnerProps {
   text?: string;
 }
 
 export function LoadingSpinner({ text = '解卦中...' }: LoadingSpinnerProps): ReactNode {
-  return (
-    <div className="flex flex-col items-center gap-3">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
-        className="w-10 h-10 rounded-full border-2 border-amber-200/20
-                   border-t-amber-200/60"
-      />
-      <p className="text-stone-400 text-sm">{text}</p>
-    </div>
-  );
+  return <BreathingDots text={text} />;
 }

@@ -1,35 +1,79 @@
 // ============================================================
-// Coin —— 单枚铜钱视觉组件
-// 用 motion.div 包裹，暴露 variants 接口
+// Coin —— 单枚铜钱组件 (仪式增强版)
+// 三态：hidden → tossing(抛起旋转) → landed(落定显面)
 // ============================================================
 
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { type ReactNode } from 'react';
 
-export type CoinAnimation = 'initial' | 'flipping' | 'landed';
-
 export interface CoinProps {
-  side: '正面' | '反面';
-  animate?: CoinAnimation;
+  /** 铜钱面值：2=反面, 3=正面, 0=未揭示（抛转中） */
+  value: number;
+  /** 抛掷动画阶段 */
+  stage: 'hidden' | 'tossing' | 'landed';
 }
 
-export const coinVariants: Variants = {
-  initial: { opacity: 0, rotateY: 0 },
-  flipping: { opacity: [0.3, 0.7, 1], rotateY: [0, 180, 360] },
-  landed: { opacity: 1, rotateY: 0 },
-};
+export function Coin({ value, stage }: CoinProps): ReactNode {
+  const isHead = value === 3;
+  const label = value === 0 ? '' : isHead ? '正' : '反';
 
-export function Coin({ side, animate = 'initial' }: CoinProps): ReactNode {
   return (
     <motion.div
-      variants={coinVariants}
-      initial="initial"
-      animate={animate}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="w-14 h-14 rounded-full bg-amber-200/15 border border-amber-200/30
-                 flex items-center justify-center text-amber-200 text-sm font-serif"
+      initial={
+        stage === 'hidden'
+          ? { opacity: 0, scale: 0.6 }
+          : false
+      }
+      animate={
+        stage === 'tossing'
+          ? {
+              opacity: 1,
+              y: [-2, -40, 0],
+              rotateZ: [0, 720, 720],
+              scale: [0.6, 1.05, 1],
+              transition: { duration: 0.55, ease: 'easeOut' },
+            }
+          : stage === 'landed'
+            ? {
+                opacity: 1,
+                y: 0,
+                rotateZ: 0,
+                scale: 1,
+                transition: { duration: 0.25, ease: 'easeOut' },
+              }
+            : { opacity: 0, scale: 0.6 }
+      }
+      className={`w-13 h-13 rounded-full flex items-center justify-center font-serif text-sm select-none ${
+        value === 0
+          ? 'bg-amber-200/10 border border-amber-200/20 text-transparent'
+          : isHead
+            ? 'bg-amber-200/18 border border-amber-200/35 text-amber-200'
+            : 'bg-stone-400/10 border border-stone-400/25 text-stone-400'
+      }`}
     >
-      {side === '正面' ? '正' : '反'}
+      {label}
     </motion.div>
+  );
+}
+
+/** 三枚铜钱并排容器 */
+export function CoinTrio({
+  coinValues,
+  stage,
+}: {
+  coinValues: [number, number, number] | null;
+  stage: 'hidden' | 'tossing' | 'landed';
+}): ReactNode {
+  if (!coinValues) return null;
+  return (
+    <div className="flex items-center justify-center gap-3">
+      {coinValues.map((v, i) => (
+        <Coin
+          key={i}
+          value={v}
+          stage={v === 0 && stage === 'landed' ? 'tossing' : stage}
+        />
+      ))}
+    </div>
   );
 }

@@ -2,46 +2,179 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   「玄机」全局样式系统
+   设计根：虚空黑 · 琥珀金 · 毛玻璃 · 光晕替投影
+   ============================================================ */
+
 @layer base {
   body {
-    @apply bg-[#0a0c0f] text-stone-300 antialiased;
+    @apply bg-brand-void text-brand-text-primary antialiased;
     margin: 0;
     min-height: 100vh;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.004'/%3E%3C/svg%3E");
   }
 
   #root {
     min-height: 100vh;
   }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+  }
 }
 
+/* ============================================================
+   卡片体系
+   ============================================================ */
 @layer components {
   .glass-card {
-    @apply backdrop-blur-xl border border-white/10 rounded-2xl;
+    @apply backdrop-blur-xl rounded-2xl;
     background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+    transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease, background-color 200ms ease;
+  }
+  .glass-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 24px rgba(253, 230, 138, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
   }
 
+  .glass-card-sm {
+    @apply backdrop-blur-xl rounded-xl;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+  }
+  .glass-card-sm:hover {
+    border-color: rgba(255, 255, 255, 0.10);
+    box-shadow: 0 0 16px rgba(253, 230, 138, 0.04);
+    transform: translateY(-1px);
+  }
+
+  .glass-card-lg {
+    @apply backdrop-blur-xl rounded-3xl;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+    transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+  }
+  .glass-card-lg:hover {
+    border-color: rgba(253, 230, 138, 0.20);
+    box-shadow: 0 0 24px rgba(253, 230, 138, 0.08), 0 0 0 1px rgba(253, 230, 138, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .glass-card-accent {
+    @apply backdrop-blur-xl rounded-2xl;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 2px solid rgba(253, 230, 138, 0.40);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+
+  .glass-card-danger {
+    @apply backdrop-blur-xl rounded-2xl;
+    background: rgba(248, 113, 113, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 2px solid rgba(248, 113, 113, 0.30);
+  }
+
+  .glass-card-static {
+    @apply backdrop-blur-xl rounded-2xl;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+}
+
+/* ============================================================
+   按钮体系
+   ============================================================ */
+@layer components {
   .btn-primary {
-    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-200
            bg-amber-200/10 text-amber-200 border border-amber-200/20
-           hover:bg-amber-200/20 hover:shadow-[0_0_20px_rgba(253,230,138,0.15)]
-           disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-amber-200/10 disabled:hover:shadow-none;
+           hover:bg-amber-200/20 hover:shadow-[0_0_24px_rgba(253,230,138,0.18)]
+           active:scale-[0.97]
+           disabled:opacity-40 disabled:cursor-not-allowed
+           disabled:hover:bg-amber-200/10 disabled:hover:shadow-none
+           disabled:active:scale-100
+           focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-amber-200/40 focus-visible:ring-offset-2
+           focus-visible:ring-offset-[#080a0f];
   }
 
-  /* ====== 塔罗卡背 ====== */
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-200
+           bg-white/5 text-stone-300 border border-white/10
+           hover:bg-white/[0.08] hover:border-white/[0.15]
+           active:scale-[0.97]
+           disabled:opacity-40 disabled:cursor-not-allowed
+           disabled:hover:bg-white/5 disabled:hover:border-white/10
+           disabled:active:scale-100;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-150
+           text-stone-400
+           hover:text-amber-200
+           active:scale-[0.97]
+           disabled:opacity-40 disabled:cursor-not-allowed
+           disabled:hover:text-stone-400;
+  }
+
+  .btn-danger {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-200
+           bg-red-400/10 text-red-300 border border-red-400/20
+           hover:bg-red-400/20 hover:shadow-[0_0_20px_rgba(248,113,113,0.15)]
+           active:scale-[0.97]
+           disabled:opacity-40 disabled:cursor-not-allowed
+           disabled:hover:bg-red-400/10 disabled:hover:shadow-none
+           disabled:active:scale-100;
+  }
+
+  .btn-cta {
+    @apply btn-primary;
+    animation: breathe 3s ease-in-out infinite;
+  }
+
+  .btn-ritual {
+    @apply px-8 py-4 rounded-2xl font-serif tracking-widest transition-all duration-200
+           bg-amber-200/10 text-amber-200 border border-amber-200/25
+           hover:bg-amber-200/20 hover:border-amber-200/40
+           hover:shadow-[0_0_48px_rgba(253,230,138,0.22),0_0_80px_rgba(253,230,138,0.08)]
+           active:scale-[0.96]
+           disabled:opacity-50 disabled:cursor-not-allowed
+           disabled:hover:bg-amber-200/10 disabled:hover:border-amber-200/25
+           disabled:hover:shadow-none disabled:active:scale-100;
+    animation: breathe 3s ease-in-out infinite;
+  }
+}
+
+/* ============================================================
+   Tarot 卡背
+   ============================================================ */
+@layer components {
   .tarot-back {
     background: linear-gradient(150deg, #1a1522 0%, #221c2a 50%, #1a1522 100%);
     border: 1.5px solid rgba(253, 230, 138, 0.22);
     border-radius: 8px;
   }
-
   .tarot-back-border {
     border: 1px solid rgba(253, 230, 138, 0.15);
     border-radius: 5px;
     position: relative;
     overflow: hidden;
   }
-
-  /* 中心菱形 */
   .tarot-back-diamond {
     width: 18px;
     height: 18px;
@@ -51,8 +184,6 @@
     position: relative;
     z-index: 1;
   }
-
-  /* 四角星点装饰 */
   .tarot-back-star {
     position: absolute;
     width: 6px;
@@ -60,30 +191,177 @@
     background: rgba(253, 230, 138, 0.35);
     border-radius: 50%;
   }
-
-  .tarot-back-star.top-left {
-    top: 8px;
-    left: 8px;
-  }
-
-  .tarot-back-star.top-right {
-    top: 8px;
-    right: 8px;
-  }
-
-  .tarot-back-star.bottom-left {
-    bottom: 8px;
-    left: 8px;
-  }
-
-  .tarot-back-star.bottom-right {
-    bottom: 8px;
-    right: 8px;
-  }
+  .tarot-back-star.top-left     { top: 8px;  left: 8px; }
+  .tarot-back-star.top-right    { top: 8px;  right: 8px; }
+  .tarot-back-star.bottom-left  { bottom: 8px; left: 8px; }
+  .tarot-back-star.bottom-right { bottom: 8px; right: 8px; }
 }
 
+/* ============================================================
+   实用工具
+   ============================================================ */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* ============================================================
+   聚光灯 & 深度层级 (VISUAL_REFACTOR)
+   ============================================================ */
+@layer components {
+  /* 选中牌的聚光灯背景 */
+  .spotlight-bg {
+    background: radial-gradient(ellipse 500px 400px at center, rgba(253,230,138,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* 舞台暗色遮罩 (选牌后覆盖背景) */
+  .stage-mask {
+    background: rgba(8,10,15,0.50);
+    backdrop-filter: blur(3px);
+  }
+
+  /* 非选中牌弱化态 */
+  .card-dimmed {
+    opacity: 0.08;
+    filter: blur(8px);
+    transform: scale(0.92);
+    pointer-events: none;
+    transition: opacity 0.6s ease, filter 0.6s ease, transform 0.6s ease;
+  }
+
+  /* 命中句容器 */
+  .destiny-sentence {
+    position: relative;
+    text-align: center;
+    padding: 15vh 1rem;
+  }
+  .destiny-sentence::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 400px 200px at center, rgba(253,230,138,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* 渐进展开区节标题 */
+  .section-divider {
+    width: 80px;
+    height: 1px;
+    background: rgba(253,230,138,0.30);
+    margin: 80px auto 20px;
+  }
+
+  /* 爻线可视化 */
+  .yao-bar {
+    height: 7px;
+    border-radius: 4px;
+    background: rgba(253,230,138,0.40);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  .yao-bar--changing {
+    background: rgba(253,230,138,0.70);
+    box-shadow: 0 0 14px rgba(253,230,138,0.22);
+  }
+  .yao-placeholder {
+    height: 2px;
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.06) 0px,
+      rgba(255,255,255,0.06) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+    border-radius: 1px;
+  }
+
+  /* 动爻脉动光点 */
+  .changing-pulse {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #fde68a;
+    animation: changingPulse 1.6s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(253,230,138,0.50), 0 0 18px rgba(253,230,138,0.18);
+  }
+
+  /* 仪式圆形按钮 */
+  .ritual-circle {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: rgba(253,230,138,0.07);
+    border: 1.5px solid rgba(253,230,138,0.22);
+    box-shadow: 0 0 32px rgba(253,230,138,0.08), 0 0 60px rgba(253,230,138,0.03);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .ritual-circle:hover {
+    background: rgba(253,230,138,0.14);
+    border-color: rgba(253,230,138,0.38);
+    box-shadow: 0 0 48px rgba(253,230,138,0.16), 0 0 80px rgba(253,230,138,0.05);
+    transform: scale(1.05);
+  }
+  .ritual-circle:active {
+    transform: scale(0.95);
+  }
+  .ritual-circle:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+/* ============================================================
+   关键帧动画 (VISUAL_REFACTOR)
+   ============================================================ */
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes changingPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1.55);
+    opacity: 1;
+  }
+}
+
+@keyframes lockPulse {
+  0% { box-shadow: 0 0 0 rgba(253,230,138,0); }
+  50% { box-shadow: 0 0 20px rgba(253,230,138,0.18), 0 0 40px rgba(253,230,138,0.05); }
+  100% { box-shadow: 0 0 0 rgba(253,230,138,0); }
+}
+
+@keyframes yaoFallIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rippleOut {
+  0% {
+    box-shadow: 0 0 0 0 rgba(253,230,138,0.30);
+  }
+  100% {
+    box-shadow: 0 0 0 24px rgba(253,230,138,0);
   }
 }
