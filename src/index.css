@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#0a0c0f] text-stone-300 antialiased;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-xl border border-white/10 rounded-2xl;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300
+           bg-amber-200/10 text-amber-200 border border-amber-200/20
+           hover:bg-amber-200/20 hover:shadow-[0_0_20px_rgba(253,230,138,0.15)]
+           disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-amber-200/10 disabled:hover:shadow-none;
+  }
+
+  /* ====== 塔罗卡背 ====== */
+  .tarot-back {
+    background: linear-gradient(150deg, #1a1522 0%, #221c2a 50%, #1a1522 100%);
+    border: 1.5px solid rgba(253, 230, 138, 0.22);
+    border-radius: 8px;
+  }
+
+  .tarot-back-border {
+    border: 1px solid rgba(253, 230, 138, 0.15);
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 中心菱形 */
+  .tarot-back-diamond {
+    width: 18px;
+    height: 18px;
+    background: rgba(253, 230, 138, 0.18);
+    transform: rotate(45deg);
+    border: 1px solid rgba(253, 230, 138, 0.25);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 四角星点装饰 */
+  .tarot-back-star {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(253, 230, 138, 0.35);
+    border-radius: 50%;
+  }
+
+  .tarot-back-star.top-left {
+    top: 8px;
+    left: 8px;
+  }
+
+  .tarot-back-star.top-right {
+    top: 8px;
+    right: 8px;
+  }
+
+  .tarot-back-star.bottom-left {
+    bottom: 8px;
+    left: 8px;
+  }
+
+  .tarot-back-star.bottom-right {
+    bottom: 8px;
+    right: 8px;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
